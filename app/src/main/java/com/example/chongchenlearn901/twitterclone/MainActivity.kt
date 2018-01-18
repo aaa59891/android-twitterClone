@@ -1,5 +1,6 @@
 package com.example.chongchenlearn901.twitterclone
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -12,6 +13,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        ParseUser.getCurrentUser()?.let {
+            gotoMainPage()
+            return
+        }
         btnSignUp.setOnClickListener(signUpClick)
         btnLogin.setOnClickListener(loginClick)
     }
@@ -32,10 +37,15 @@ class MainActivity : AppCompatActivity() {
     private val loginClick = View.OnClickListener {
         ParseUser.logInInBackground(etAccount.text.toString(), etPassword.text.toString()) { user, e ->
             e?.let {
-                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
             }?: run{
-                Toast.makeText(applicationContext, "Login successfully", Toast.LENGTH_SHORT).show();
+                gotoMainPage()
             }
         }
+    }
+
+    private fun gotoMainPage(){
+        startActivity(Intent(applicationContext, MainPageActivity::class.java))
+        finish()
     }
 }
