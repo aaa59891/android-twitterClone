@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TwitterClone</string>
+    <string name="parse_server_url">http://192.168.2.75:1337/parse/</string>
+    <string name="parse_app_id">parser_app_id</string>
+</resources>
