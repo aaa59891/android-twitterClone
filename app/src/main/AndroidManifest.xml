@@ -26,7 +26,8 @@
             android:value="@string/parse_app_id" />
 
         <activity android:name=".MainPageActivity" />
-        <activity android:name=".AccountActivity"></activity>
+        <activity android:name=".AccountActivity" />
+        <activity android:name=".UserActivity"></activity>
     </application>
 
 </manifest>

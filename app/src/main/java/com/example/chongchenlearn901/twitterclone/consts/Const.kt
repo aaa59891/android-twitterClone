@@ -11,3 +11,5 @@ val FIELD_ACCOUNT = "account"
 val FIELD_POST = "post"
 val FIELD_FOLLOW = "follow"
 val SDF = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
+
+val INTENT_SEARCH_USERNAME = "username"

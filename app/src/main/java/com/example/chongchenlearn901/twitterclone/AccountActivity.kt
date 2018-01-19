@@ -28,18 +28,27 @@ class AccountActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
         tvAccount.text = intent.getStringExtra(INTENT_ACCOUNT)
+        val account = intent.getStringExtra(INTENT_ACCOUNT)
 
-        if(intent.getStringExtra(INTENT_ACCOUNT) == username){
+        if(account == username){
             cbFollow.visibility = View.INVISIBLE
             cbFollow.isClickable = false
         }else{
             cbFollow.setOnClickListener(cbFollowClick)
+            ParseQuery<ParseObject>(COLLECTION_FOLLOW).whereEqualTo(FIELD_ACCOUNT, username).whereEqualTo(FIELD_FOLLOW, account).getFirstInBackground{
+                data, e ->
+                e?.let {
+                    cbFollow.isChecked = false
+                }?: run{
+                    cbFollow.isChecked = true
+                }
+            }
         }
         val feedData = mutableListOf<FeedItem>()
         val adapter = FeedItemAdapter(this, R.layout.feed_content, feedData)
         lvFeed.adapter = adapter
 
-        val query = ParseQuery<ParseObject>(COLLECTION_POST).whereEqualTo(FIELD_ACCOUNT, username)
+        val query = ParseQuery<ParseObject>(COLLECTION_POST).whereEqualTo(FIELD_ACCOUNT, account)
         getDataAndNotifyDataChange(this, query, adapter, feedData)
 
     }
@@ -56,13 +65,11 @@ class AccountActivity : AppCompatActivity() {
             ParseQuery<ParseObject>(COLLECTION_FOLLOW)
                     .whereEqualTo(FIELD_ACCOUNT, username)
                     .whereEqualTo(FIELD_FOLLOW, tvAccount.text.toString())
-                    .getFirstInBackground{
+                    .findInBackground{
                         data, e ->
                             e?.apply { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
                             ?:run{
-                                data.deleteInBackground{
-                                    it?.apply { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
-                                }
+                                data.forEach { it.deleteInBackground { it?.apply { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() } } }
                             }
 
                     }
